@@ -5,4 +5,5 @@ export default defineConfig({
   extract: {
     include: ["index.html", "src/**/*.{vue, ts}"],
   },
+  plugins: [require("@windicss/plugin-question-mark")],
 });

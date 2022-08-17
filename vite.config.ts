@@ -9,12 +9,17 @@ import { readFileSync } from "fs";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      "~/": `${resolve(__dirname, "src")}/`,
+    },
+  },
   plugins: [
     Pages({
       pagesDir: [
         {
           dir: "src/pages",
-          baseRoute: "/",
+          baseRoute: "",
         },
       ],
       extensions: ["vue"],
