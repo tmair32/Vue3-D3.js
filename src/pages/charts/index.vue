@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { defineAsyncComponent, markRaw, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+  markRaw,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 
 const piniaState = JSON.parse(localStorage.getItem("piniaState"));
 const commonState = piniaState.common;
@@ -13,17 +20,32 @@ const comp = markRaw(
 );
 
 const chartRef = ref();
-const chartWidth = ref(0);
-const chartHeight = ref(0);
+
+const chartWidth = computed(() => {
+  if (!chartRef.value) return 0;
+  return chartRef.value.clientWidth;
+});
+const chartHeight = computed(() => {
+  if (!chartRef.value) return 0;
+  return chartRef.value.clientHeight;
+});
+const chartRatio = ref(0);
 onMounted(() => {
-  chartWidth.value = chartRef.value.clientWidth;
-  chartHeight.value = chartRef.value.clientHeight;
+  watch(
+    chartRef.value,
+    (chartRef) => {
+      console.log(chartRef);
+    },
+    { deep: true }
+  );
+
+  chartRatio.value = (chartWidth.value / chartHeight.value).toFixed(2);
 });
 </script>
 <template>
-  <div class="col-span-12">
+  <div class="col-span-12 grid grid-rows-2">
     <section class="section1">
-      <div ref="chartRef" class="chart-box">
+      <div ref="chartRef" class="chart-box" :class="`pb-[${chartRatio}%]`">
         <component
           :is="comp"
           :simple="true"
@@ -57,7 +79,7 @@ onMounted(() => {
 }
 
 .chart-box {
-  @apply inline-block relative w-full pb-[100%] align-top overflow-hidden;
+  @apply inline-block relative w-full align-top overflow-hidden;
   @apply shadow-inner shadow-gray-200;
 }
 
